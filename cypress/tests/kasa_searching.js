@@ -59,5 +59,31 @@ describe('Searching Kasas', () => {
           .should('have.length.at.least', 1)
           .contains('Heating')
     })
+
+  // Include a scenario that checks if a selected Kasa has "Heating" in the amenities list when
+  // a user visits the property details pages for all the locations they have searched for previously
+  it(`All Kasas in ${city} should have heating`, () => {
+    cy.searchForLocation(city)
+
+    cy.get('.property-card__content').each((card, i) => {
+        cy.get('.property-card__content').eq(i)
+            .find('.property-card__name')
+            .click()
+
+        // assuming that if a property has heating, there is no difference between room types from this aspect
+        cy.get('.room-type-card__content')
+            .should('have.length.at.least', 1)
+            .first()
+            .find('.room-type-card__header-title')
+            .click()
+
+        cy.get('.room-type-popup__amenities-list')
+            .should('have.length.at.least', 1)
+            .contains('Heating')
+
+        cy.get('#room-type-header__close-button').click()
+        cy.go('back')
+      })
+    })
   })
 })
